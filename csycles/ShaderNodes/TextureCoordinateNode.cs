@@ -37,6 +37,8 @@ namespace ccl.ShaderNodes
 		public VectorSocket EnvCubemapVerticalCross { get; set; }
 		public VectorSocket EnvCubemapHorizontalCross { get; set; }
 		public VectorSocket EnvHemispherical { get; set; }
+		public FloatSocket DecalForward { get; set; }
+		public FloatSocket DecalInside { get; set; }
 
 		public TextureCoordinateOutputs(ShaderNode parentNode)
 		{
@@ -72,6 +74,10 @@ namespace ccl.ShaderNodes
 			AddSocket(EnvCubemapHorizontalCross);
 			EnvHemispherical = new VectorSocket(parentNode, "EnvHemi");
 			AddSocket(EnvHemispherical);
+			DecalForward = new FloatSocket(parentNode, "DecalForward");
+			AddSocket(DecalForward);
+			DecalInside = new FloatSocket(parentNode, "DecalInside");
+			AddSocket(DecalInside);
 		}
 	}
 

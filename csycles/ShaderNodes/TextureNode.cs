@@ -61,6 +61,13 @@ namespace ccl.ShaderNodes
 			Tube,
 		}
 
+		public enum DecalDirection
+		{
+			Both = 0,
+			Forward = 1,
+			Backward = 2,
+		}
+
 		public enum TextureExtension
 		{
 			Repeat,

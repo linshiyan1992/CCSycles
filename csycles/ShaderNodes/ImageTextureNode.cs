@@ -33,10 +33,25 @@ namespace ccl.ShaderNodes
 		/// </summary>
 		public VectorSocket Vector { get; set; }
 
+		/// <summary>
+		/// DecalForward as calculated by the TextureCoordinateNode. Needs to be
+		/// connected to work.
+		/// </summary>
+		public FloatSocket DecalForward { get; set; }
+		/// <summary>
+		/// DecalInside as calculated by the TextureCoordinateNode. Needs to be
+		/// connected to work.
+		/// </summary>
+		public FloatSocket DecalInside { get; set; }
+
 		internal ImageTextureInputs(ShaderNode parentNode)
 		{
 			Vector = new VectorSocket(parentNode, "Vector");
 			AddSocket(Vector);
+			DecalForward = new FloatSocket(parentNode, "DecalForward");
+			AddSocket(DecalForward);
+			DecalInside = new FloatSocket(parentNode, "DecalInside");
+			AddSocket(DecalInside);
 		}
 	}
 
@@ -94,6 +109,13 @@ namespace ccl.ShaderNodes
 			ColorSpace = TextureColorSpace.None;
 			Projection = TextureProjection.Flat;
 			Extension = TextureExtension.Repeat;
+
+			HorizontalSweepStart = 0.0f;
+			HorizontalSweepEnd = 1.0f;
+			VerticalSweepStart = 0.0f;
+			VerticalSweepEnd = 1.0f;
+			DecalHeight = 1.0f;
+			DecalRadius = 1.0f;
 		}
 
 		/// <summary>
@@ -119,17 +141,59 @@ namespace ccl.ShaderNodes
 		/// </summary>
 		public bool AlternateTiles { get; set; }
 
+		/// <summary>
+		/// Give the start for the horizontal sweep of a spherical or cylindrical decal projection
+		/// </summary>
+		public float HorizontalSweepStart { get; set; }
+
+		/// <summary>
+		/// Give the end for the horizontal sweep of a spherical or cylindrical decal projection
+		/// </summary>
+		public float HorizontalSweepEnd { get; set; }
+
+		/// <summary>
+		/// Give the start for the vertical sweep of a spherical or cylindrical decal projection
+		/// </summary>
+		public float VerticalSweepStart { get; set; }
+
+		/// <summary>
+		/// Give the end for the vertical sweep of a spherical or cylindrical decal projection
+		/// </summary>
+		public float VerticalSweepEnd { get; set; }
+
+		/// <summary>
+		/// Height for cylindrical projection of a decal
+		/// </summary>
+		public float DecalHeight { get; set; }
+
+		/// <summary>
+		/// Radius for cylindrical or spherical decal projection
+		/// </summary>
+		public float DecalRadius { get; set; }
+
+		/// <summary>
+		/// Direction of the decal: forward, backward
+		/// </summary>
+		public DecalDirection Direction { get; set; }
+
 		internal override void SetEnums(uint clientId, uint shaderId)
 		{
 			CSycles.shadernode_set_enum(clientId, shaderId, Id, Type, "color_space", (int)ColorSpace);
 			CSycles.shadernode_set_enum(clientId, shaderId, Id, Type, "projection", (int)Projection);
 			CSycles.shadernode_set_enum(clientId, shaderId, Id, Type, "interpolation", (int)Interpolation);
+			CSycles.shadernode_set_enum(clientId, shaderId, Id, Type, "decal_projection", (int)Direction);
 		}
 
 		internal override void SetDirectMembers(uint clientId, uint sceneId, uint shaderId)
 		{
 			base.SetDirectMembers(clientId, sceneId, shaderId);
 			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "projection_blend", ProjectionBlend);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_height", DecalHeight);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_radius", DecalRadius);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_hor_start", HorizontalSweepStart);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_hor_end", HorizontalSweepEnd);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_ver_start", VerticalSweepStart);
+			CSycles.shadernode_set_member_float(clientId, shaderId, Id, Type, "decal_ver_end", VerticalSweepEnd);
 			CSycles.shadernode_set_member_int(clientId, shaderId, Id, Type, "extension", (int)Extension);
 			CSycles.shadernode_set_member_bool(clientId, shaderId, Id, Type, "use_alpha", UseAlpha);
 			CSycles.shadernode_set_member_bool(clientId, shaderId, Id, Type, "is_linear", IsLinear);

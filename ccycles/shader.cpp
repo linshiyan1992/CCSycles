@@ -799,6 +799,9 @@ void cycles_shadernode_set_enum(unsigned int client_id, unsigned int shader_id, 
 			else if (ename == "projection") {
 				node->projection = (ccl::NodeImageProjection)value;
 			}
+			else if (ename == "decal_projection") {
+				node->decal_projection = (ccl::NodeImageDecalProjection)value;
+			}
 			break;
 		}
 		case shadernode_type::GRADIENT_TEXTURE:
@@ -1100,6 +1103,24 @@ void cycles_shadernode_set_member_float(unsigned int client_id, unsigned int sha
 			if (mname == "projection_blend") {
 				imtexnode->projection_blend = value;
 			}
+			else if (mname == "decal_height") {
+				imtexnode->height = value;
+			}
+			else if (mname == "decal_radius") {
+				imtexnode->radius = value;
+			}
+			else if (mname == "decal_hor_start") {
+				imtexnode->horizontal_sweep_start = value;
+			}
+			else if (mname == "decal_hor_end") {
+				imtexnode->horizontal_sweep_end = value;
+			}
+			else if (mname == "decal_ver_start") {
+				imtexnode->vertical_sweep_start = value;
+			}
+			else if (mname == "decal_ver_end") {
+				imtexnode->vertical_sweep_end = value;
+			}
 		}
 		break;
 		case shadernode_type::BRICK_TEXTURE:
@@ -1142,6 +1163,15 @@ void cycles_shadernode_set_member_vec4_at_index(unsigned int client_id, unsigned
 			}
 			colorramp->ramp[index] = ccl::make_float3(x, y, z);
 			colorramp->ramp_alpha[index] = w;
+		}
+		break;
+		case shadernode_type::IMAGE_TEXTURE:
+		{
+			ccl::ImageTextureNode* imgtex = dynamic_cast<ccl::ImageTextureNode*>(shnode);
+			imgtex->horizontal_sweep_start = x;
+			imgtex->horizontal_sweep_end = y;
+			imgtex->vertical_sweep_start = z;
+			imgtex->vertical_sweep_end = w;
 		}
 		break;
 		case shadernode_type::TEXTURE_COORDINATE:
